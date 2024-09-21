@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Diagnosis</title>
+</head>
+<body>
+
+    <h2>General Symptom Check</h2>
+    <form id="symptomForm">
+        <label>Cough:</label>
+        <input type="radio" name="cough" value="yes"> Yes
+        <input type="radio" name="cough" value="no"> No
+        <br>
+
+        <label>Fever:</label>
+        <input type="radio" name="fever" value="yes"> Yes
+        <input type="radio" name="fever" value="no"> No
+        <br>
+
+        <label>Difficulty Breathing:</label>
+        <input type="radio" name="breath" value="yes"> Yes
+        <input type="radio" name="breath" value="no"> No
+        <br>
+
+        <label>Fatigue:</label>
+        <input type="radio" name="fatigue" value="yes"> Yes
+        <input type="radio" name="fatigue" value="no"> No
+        <br>
+        
+        <div id="additionalQuestions"></div>
+
+        <button type="button" onclick="diagnoseSpecificDisease()">Diagnose</button>
+    </form>
+
+    <h3 id="result">You may have: </h3>
+
+    <script>
+        function checkDisease() {
+            const diseaseType = "Obstructive"; // Change this
+
+            let additionalQuestions = "";
+
+            switch (diseaseType) {
+                case "COVID":
+                    additionalQuestions += `
+                        <label>Do you have a sore throat?</label>
+                        <input type="radio" name="soreThroat" value="yes"> Yes
+                        <input type="radio" name="soreThroat" value="no"> No
+                        <br>
+                        <label>Have you lost your sense of taste or smell?</label>
+                        <input type="radio" name="tasteSmellLoss" value="yes"> Yes
+                        <input type="radio" name="tasteSmellLoss" value="no"> No
+                        <br>
+                    `;
+                    break;
+
+                case "Obstructive":
+                    additionalQuestions += `
+                        <label>Do you have a history of smoking?</label>
+                        <input type="radio" name="smokingHistory" value="yes"> Yes
+                        <input type="radio" name="smokingHistory" value="no"> No
+                        <br>
+                        <label>Do you experience wheezing?</label>
+                        <input type="radio" name="wheezing" value="yes"> Yes
+                        <input type="radio" name="wheezing" value="no"> No
+                        <br>
+                    `;
+                    break;
+
+                case "Upper":
+                    additionalQuestions += `
+                        <label>Have you been exposed to dust or harmful chemicals?</label>
+                        <input type="radio" name="dustExposure" value="yes"> Yes
+                        <input type="radio" name="dustExposure" value="no"> No
+                        <br>
+                        <label>Do you have chest pain?</label>
+                        <input type="radio" name="chestPain" value="yes"> Yes
+                        <input type="radio" name="chestPain" value="no"> No
+                        <br>
+                    `;
+                    break;
+
+                case "Lower":
+                    additionalQuestions += `
+                        <label>Do you have mucus/phlegm production?</label>
+                        <input type="radio" name="mucus" value="yes"> Yes
+                        <input type="radio" name="mucus" value="no"> No
+                        <br>
+                        <label>Do you have a high fever?</label>
+                        <input type="radio" name="highFever" value="yes"> Yes
+                        <input type="radio" name="highFever" value="no"> No
+                        <br>
+                    `;
+                    break;
+
+                default:
+                    additionalQuestions += "<p>No specific follow-up questions for this disease group.</p>";
+            }
+
+            document.getElementById("additionalQuestions").innerHTML = additionalQuestions;
+        }
+
+        function diagnoseSpecificDisease() {
+            const diseaseType = "Obstructive"; // Change this
+            let specificDisease = "Unknown";
+
+            if (diseaseType === "COVID") {
+                const soreThroat = document.querySelector('input[name="soreThroat"]:checked')?.value;
+                const tasteSmellLoss = document.querySelector('input[name="tasteSmellLoss"]:checked')?.value;
+
+                if (soreThroat === "yes" && tasteSmellLoss === "yes") {
+                    specificDisease = "COVID-19";
+                } else if (soreThroat === "no") {
+                    specificDisease = "Common Cold";
+                }
+            } else if (diseaseType === "Obstructive") {
+                const smokingHistory = document.querySelector('input[name="smokingHistory"]:checked')?.value;
+                const wheezing = document.querySelector('input[name="wheezing"]:checked')?.value;
+
+                if (smokingHistory === "yes" && wheezing === "yes") {
+                    specificDisease = "COPD";
+                } else if (smokingHistory === "yes" && wheezing === "no") {
+                    specificDisease = "Chronic Bronchitis";
+                } else {
+                    specificDisease = "Asthma";
+                }
+            } else if (diseaseType === "Upper") {
+                const dustExposure = document.querySelector('input[name="dustExposure"]:checked')?.value;
+                const chestPain = document.querySelector('input[name="chestPain"]:checked')?.value;
+
+                if (dustExposure === "yes" && chestPain === "yes") {
+                    specificDisease = "Silicosis";
+                } else if (dustExposure === "no" && chestPain === "yes") {
+                    specificDisease = "Upper Lobe Pneumonia";
+                } else if (dustExposure === "yes") {
+                    specificDisease = "Hypersensitivity Pneumonitis";
+                } else {
+                    specificDisease = "Tuberculosis"; 
+                }
+            } else if (diseaseType === "Lower") {
+                const mucus = document.querySelector('input[name="mucus"]:checked')?.value;
+                const highFever = document.querySelector('input[name="highFever"]:checked')?.value;
+
+                if (mucus === "yes" && highFever === "yes") {
+                    specificDisease = "Pneumonia";
+                } else if (mucus === "yes") {
+                    specificDisease = "Bronchitis";
+                } else if (highFever === "no") {
+                    specificDisease = "Bronchiolitis"; 
+                } else {
+                    specificDisease = "Tracheitis"; 
+                }
+            }
+
+            document.getElementById("result").innerText = "You may have: " + specificDisease;
+        }
+
+        window.onload = checkDisease;
+    </script>
+</body>
+</html>
